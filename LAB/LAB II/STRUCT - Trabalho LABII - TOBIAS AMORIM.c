@@ -1,0 +1,112 @@
+#include<stdio.h>
+#include<locale.h>
+
+typedef struct CADASTRO{
+	char nome[50];
+	int matricula;
+	float notaG1;
+	float notaG2;
+}CADASTRO;
+
+//Função para preencher os dados do aluno
+struct CADASTRO PreencherINFO(CADASTRO alCAD){
+	printf("\n");
+	printf("Digite o nome do Aluno: ");
+	fflush(stdin);
+	gets(alCAD.nome);
+	fflush(stdin);
+	printf("Digite a matricula do Aluno: ");
+	scanf("%d" ,&alCAD.matricula);
+	printf("Digite a nota da G1: ");
+	scanf("%f", &alCAD.notaG1);
+	fflush(stdin);
+	printf("Digite a nota da G2: ");
+	scanf("%f", &alCAD.notaG2);
+	return alCAD;
+}
+//Função para mostrar os dados cadastrados
+void mostrarINFO(CADASTRO print){
+	printf("\n");
+	printf("\nAluno: %s", print.nome);
+	printf("\nMatricula: %d",print.matricula);
+	printf("\nNota G1: %.1f",print.notaG1);
+	printf("\nNota G2: %.1f",print.notaG2);
+}
+//Função que calcula a média das notas
+float CalculoMedia(CADASTRO media){
+	float res = (media.notaG1 + media.notaG2) / 2;
+	return res;	
+}
+//Situção de aprovação do aluno
+void SituacaoAluno(float SIT){
+	printf("\n");
+	if (SIT >= 7){
+		printf("Aluno aprovado!\n");
+	}else
+		printf("Aluno reprovado!\n");
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int main (){
+	setlocale(LC_ALL, "Portuguese");
+	int menu;
+	float media;
+	
+	do{
+		CADASTRO aluno;
+		
+		printf("\n");
+		printf("*****************************");
+		printf("\n***** SISTEMA DE ALUNOS *****\n");
+		printf("*****************************\n");
+		printf("\n");
+		printf("MENU:");
+		printf("\n1 - Preencher dados do aluno");
+		printf("\n2 - Mostrar as informações do aluno");
+		printf("\n3 - Mostrar a média das notas do aluno");
+		printf("\n4 - Mostrar a situação de aprovação do aluno");
+		printf("\n0 - Sair do sistema");
+		printf("\nDigite a opção desejada: ");
+		scanf("%d",&menu);
+		
+		switch(menu){
+			case 0 : {
+				printf("\nSAINDO DO SISTEMA...");
+				break;
+			}
+			case 1 : {
+				CADASTRO aluno = PreencherINFO(aluno);
+				/*Não consegui armazenar os dados com uma função void. 
+				Precisei criar uma função STRUCT para isso. Não entendo a relação
+				entre o struct e uma função normal como void.
+				Não sei se deveria ser feito assim, mas foi o unico jeito que consegui fazer. */
+				break;
+			}
+			case 2 : {
+				mostrarINFO(aluno);
+				break;
+			}
+			case 3 : {
+				media = CalculoMedia(aluno);
+				printf("\nMédia do aluno(a) %s: %.1f\n", aluno.nome, media);
+				break;
+			}
+			case 4 : {
+				media = CalculoMedia(aluno);
+				SituacaoAluno(media);
+				break;
+			}
+			default : {
+				printf("\nNÚMERO DIGITADO INVÁLIDO!");
+				printf("\n");
+				printf("\nRetornando ao sistema...");
+				break;
+			}	
+		}
+		printf("\n==================================================================");
+		printf("\n");
+	}while(menu !=0);
+	
+	return 0;
+}

@@ -1,0 +1,12 @@
+Criar um programa que permita o cadastro de notas de alunos numa estrutura de dados. Cada pessoa terá os
+seguintes dados cadastrados: Nome, Idade, NotaG1, NotaG2 e Aprovação.
+
+!Estudar a biblioteca string.h para montar o programa
+
+- Declarar a estrutura de dados dentro de um vetor
+- Inicializar a estrutura do vetor
+- Permitir preencher os dados dos alunos (tentar fazer uma função)
+- Mostrar os dados de todos alunos na tela
+- Permitir fazer a pesquisa de um aluno 
+- Permitir salvar os dados em um arquivo txt
+-- Criar um menu interativo para o usuario com as opções anteriores.

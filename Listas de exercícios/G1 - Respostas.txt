@@ -1,0 +1,24 @@
+QUESTAO 0:
+
+#include <stdio.h>
+
+void Troca(int * n, int * m) {
+    int aux=0;
+    
+    aux = *n;
+    *n = *m;
+    *m = aux;
+    
+}
+
+int main( ) {
+    int x=7, y=5;
+    
+    Troca(&x, &y);
+    printf("%d %d", x, y); 
+    
+    return 0;
+}
+===================================================
+QUESTAO 1:
+

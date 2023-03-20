@@ -1,0 +1,21 @@
+Faça um algoritmo que armazene uma matriz[5][5] de inteiros;
+Permita preencher todos os números dessa matriz;
+Mostre toda a matriz;
+Comente as instruções de preenchimento manual e faça o preenchimento aleatório;
+Mostre toda a matriz;
+Zere todos elementos de uma determinada linha;
+Zere todos elementos de uma determinada coluna;
+Mostre apenas a diagonal da matriz;
+Multiplique a diagonal da matriz por um determinado número;
+Mostre o resultado da soma de todos os números da diagonal da matriz;
+Mostre o produto de todos os números da diagonal invertida da matriz;
+Mostre a soma de todos os números da matriz;
+Mostre o menor número da matriz;
+Mostre o índice do maior número da matriz;
+Mostre a multiplicação de todos os números pares da matriz;
+Mostre o índice de um determinado elemento da matriz, caso exista;
+
+
+dever de casa:
+https://studio.code.org/s/20-hour/stage/2/puzzle/1
+
