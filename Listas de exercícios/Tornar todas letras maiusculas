@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+void Upper(char *c){
+	int cont = 0;
+	int i;
+	
+	while(c[cont] != 0){
+		cont++;
+	}
+	
+	for(i = 0; i < cont; i++){
+		if(c[i] >= 'a' && c[i] <= 'z'){
+			c[i] = c[i] - 'a' + 'A';
+		}
+	}
+}
+
+int main (){
+	char c[50];
+	int i, cont = 0;
+	
+	printf("Digite seu nome: ");
+	scanf("%s", c);
+
+	Upper(c);
+	
+	while(c[cont] != 0){
+		cont++;
+	}
+	
+	for(i = 0; i <= cont; i++){
+		printf("%c", c[i]);
+	}
+	return 0;
+}
