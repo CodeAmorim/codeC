@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int* menor(int *p, int t){
+	int i, *m;
+	
+	m = p;
+	p++;
+	for(i = 1; i < t; i++){
+		if(*m > *p)
+			m = p;
+		p++;
+	}
+	
+	return m;
+}
+
+void troca(int *x, int *y){
+	int c = *x;
+	*x = *y;
+	*y = c;
+}
+
+void mostrar_vetor(int *p, int t) {
+	printf("\n \n");
+	
+	while(t-- > 0)
+		printf("%d \t", *(p++));
+}
+
+void ordenar(int *p, int t){
+	int a=t;
+	int* x,*aux=p;
+
+	while(t > 1){
+		x = menor(p, t);
+		troca(p, x);
+		p++;
+		t--;	
+	}
+
+}
+
+int main(){
+	int *p, *x, *aux;
+	p = (int*)malloc(6 * sizeof(int));
+	
+	x = p;
+	aux = p;
+	*(x++) = 4;
+	*(x++) = 9;
+	*(x++) = 1;
+	*(x++) = 3;
+	*(x++) = 5;
+	*(x++) = 7;
+	mostrar_vetor(p,6);
+	ordenar(p, 6);
+	mostrar_vetor(p,6);
+	
+	/*
+	x = menor(p, 4);
+	troca(p, x);
+	aux++;
+	x = menor(aux, 3);
+	mostrar_vetor(p, 4);
+	*/
+}
