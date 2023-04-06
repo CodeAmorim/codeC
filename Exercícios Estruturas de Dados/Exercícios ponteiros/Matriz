@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+void mostrar(int *p, int l, int c){
+	int i, j;
+	
+	for(i = 0; i < l; i++){
+		for(j = 0; j < c; j++)
+			printf("%d ", *(p+(i * l)+j)); //ou printf("%d ", *(p++));
+		printf("\n");
+	}
+}
+
+int main(){
+	int l, c;
+	
+	printf("Digite o numero de linhas:");
+	scanf("%d", &l);
+	
+	printf("Digite o numero de colunas:");
+	scanf("%d", &c);
+	
+	int matriz = (int *)malloc(sizeof(int)*l *c);
+	
+	mostrar(matriz, l, c);
+}
