@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+
+char* alocar(int i, int j){
+	char *y;
+	y = (char*)malloc(sizeof(char)*i*j);
+	return y;
+}
+
+void printM(char *m, int x, int y){
+	int i, j;
+	for(i=0;i<x;i++){
+		for(j=0;j<y;j++){
+			printf("%c", m[i*y+j]);
+		}
+		printf("\n");
+	}
+}
+
+void marcar(char *A, int i, int j, char *B, int x, int y){
+	int m, n;
+	
+	for(m=0;m<x;m++){
+		for(n=0;n<y;n++){
+			*((A+((i-x)*j+(j-y)))+m*j+n)=*(B+m*y+n);
+		}
+	}
+}
+
+int main(){
+	setlocale(LC_ALL, "Portuguese");
+
+	char *A, *B;
+	int i, j, x, y;
+	int m, n, aux;
+	
+	printf("Digite o tamanho da imagem\nLargura: ");
+	scanf("%d", &i);
+	printf("Altura: ");
+	scanf("%d", &j);
+	A = alocar(i,j);
+	
+	for(m=0;m<i;m++){
+		for(n=0;n<j;n++){
+			*(A+m*j+n)='A';
+		}
+	}
+	printM(A,i,j);
+	
+	printf("\n");
+	printf("Digite o tamanho da marca d'agua\nLargura: ");
+	scanf("%d", &x);
+	printf("Altura: ");
+	scanf("%d", &y);
+	
+	if(x<i && y<j){
+		B = alocar(x,y);
+		
+		for(aux=0;aux<x*y;aux++){
+			*(B+aux) = 48 + aux;
+		}
+		
+		printM(B,x,y);
+		printf("\n\n");
+		marcar(A,i,j,B,x,y);
+		printM(A,i,j);
+	}
+	
+	free(A);
+	free(B);
+}
