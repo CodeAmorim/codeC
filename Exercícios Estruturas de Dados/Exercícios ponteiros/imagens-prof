@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void mostrar(char *p, int l, int c){
 	int i, j;
@@ -11,8 +12,8 @@ void mostrar(char *p, int l, int c){
 	}
 }
 
-char *colar (char *f1, int l1, int c1, char *f2, int l2, int c2){
-	char *f3 = (char*)malloc(sizeof(char) * l1 * l2);
+char *colar(char *f1, int l1, int c1, char *f2, int l2, int c2){
+    char *f3 = (char*)malloc(sizeof(char) * l1 * l2);
 	int i, j;
 	for(i = 0; i < l1; i++){
 		for(j = 0; j < c1; j++)
@@ -31,6 +32,45 @@ char *colar (char *f1, int l1, int c1, char *f2, int l2, int c2){
 	return f3;
 }
 
+//                       100      10      10        9       3       3   
+char *colarDireita (char *f1, int l1, int c1, char *f2, int l2, int c2){
+    char *f4 = (char*)malloc(sizeof(char) * l1 * l2);
+    int i, j;
+    for(i = 0; i < l1; i++){
+        for(j = 0; j < c1; j++)
+            if(i < l2 && j >= (c1 - c2)){
+                *f4 = *f2; 
+                f4++;
+                f2++;
+            }else{
+                *f4 = *f1;
+                f4++;
+                f1++;
+            }
+    }
+    f4 = f4 - (l1 * c1);
+    return f4;
+}
+
+//                       100      10      10        9       3       3   
+char *colarDireitaInferior (char *f1, int l1, int c1, char *f2, int l2, int c2){
+    char *f5 = (char*)malloc(sizeof(char) * l1 * l2);
+    int i, j;
+    for(i = 0; i < l1; i++){
+        for(j = 0; j < c1; j++)
+            if(i >= (c1 - c2) && j >= (c1 - c2)){
+                *f5 = *f2; 
+                f5++;
+                f2++;
+            }else{
+                *f5 = *f1;
+                f5++;
+                f1++;
+            }
+    }
+    f5 = f5 - (l1 * c1);
+    return f5;
+}
 
 int main (){
 	char foto1[10][10];
@@ -38,6 +78,7 @@ int main (){
 	int i;
 	char *p = &foto1[0][0];
 	//mesma coisa que *p = foto1;
+	char *q, *r;
 	
 	for(i = 0; i < 100; i++, p++)
 		*p = 'A';
@@ -45,9 +86,15 @@ int main (){
 	for(i = 0, p = foto2; i < 9; i++, p++)
 		*p = 'B';
 
-	mostrar(&foto1[0][0], 10, 10);
-	mostrar(&foto2[0][0], 3, 3);
-	p = colar(foto1, 10, 10, foto2, 3, 3);
+	//mostrar(&foto1[0][0], 10, 10);
+	//mostrar(&foto2[0][0], 3, 3);
+	//p = colar(foto1, 10, 10, foto2, 3, 3);
+	//mostrar(p, 10, 10);
 	printf("\n");
-	mostrar(p, 10, 10);
+	//q = colarDireita(foto1, 10, 10, foto2, 3, 3);
+	//mostrar(q, 10, 10);
+	r = colarDireitaInferior(foto1, 10, 10, foto2, 3, 3);
+	mostrar(r, 10, 10);
+	
+	return 0;
 }
