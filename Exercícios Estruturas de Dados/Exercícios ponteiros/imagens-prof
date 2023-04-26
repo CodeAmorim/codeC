@@ -37,17 +37,17 @@ int main (){
 	char foto2[3][3];
 	int i;
 	char *p = &foto1[0][0];
+	//mesma coisa que *p = foto1;
 	
-	for(i = 0; i < 100; i++){
+	for(i = 0; i < 100; i++, p++)
 		*p = 'A';
-		p++;
-	}
 
 	for(i = 0, p = foto2; i < 9; i++, p++)
 		*p = 'B';
-		
+
 	mostrar(&foto1[0][0], 10, 10);
 	mostrar(&foto2[0][0], 3, 3);
-	colar(foto1, 10, 10, foto2, 3, 3);
+	p = colar(foto1, 10, 10, foto2, 3, 3);
+	printf("\n");
 	mostrar(p, 10, 10);
 }
