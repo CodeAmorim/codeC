@@ -1,0 +1,51 @@
+#include<stdio.h>
+#include<locale.h>
+
+typedef struct al{
+	char nome[50];
+	float g1;
+	float g2;
+}aluno;
+
+void SituacaoAluno(float);
+
+//Funcao que calcula a media das notas
+void CalculoMedia(aluno a1){
+	float media = (a1.g1 + a1.g2) / 2.0;
+	printf("Media do aluno: %.1f", media);
+	SituacaoAluno(media);
+}
+
+void SituacaoAluno(float SIT){
+	printf("\n");
+	if (SIT >= 7){
+		printf("Aluno aprovado!\n");
+	}else if(SIT > 4 && SIT < 7){
+		printf("Aluno exame!\n");
+	}else{
+		printf("Aluno reprovado!\n");
+	}
+}
+
+int main (){
+	setlocale(LC_ALL, "Portuguese");
+	aluno turma[3];
+	float media;
+	int i;
+	
+	for(i = 0; i < 3; i++){
+		printf("Digite o nome do aluno: ");
+		fflush(stdin);
+		gets(turma[i].nome);
+		fflush(stdin);
+		printf("Digite a G1: ");
+		scanf("%f", &turma[i].g1);
+		fflush(stdin);
+		printf("Digite a G2: ");
+		scanf("%f", &turma[i].g2);
+		CalculoMedia(turma[i]);
+	}
+
+	
+	return 0;
+}
