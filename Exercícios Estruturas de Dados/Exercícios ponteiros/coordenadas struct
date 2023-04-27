@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <math.h>
+
+// TAD TIPO ABSTRATO DE DADO
+typedef struct coor{
+	float latitude; //x
+	float longitude; //y
+}coordenada;
+
+float distancia(coordenada a, coordenada b){
+    float x = a.latitude - b.latitude;
+    float y = a.longitude - b.longitude;
+    float d = sqrt(pow(x, 2) + pow(y, 2));
+
+    return d * 111;
+}
+
+int main(){
+    float dist;
+    coordenada p1, p2;
+    
+    printf("Digite a latitude do ponto 1: ");
+    scanf("%f", &p1.latitude);
+    
+    printf("Digite a longitude do ponto 1:");
+    scanf("%f", &p1.longitude);
+    
+    printf("Digite a latitude do ponto 2: ");
+    scanf("%f", &p2.latitude);
+    
+    printf("Digite a longitude do ponto 2:");
+    scanf("%f", &p2.longitude);
+    
+    printf("Ponto 1: (%.1f, %.1f)\n", p1.latitude, p1.longitude);
+    printf("Ponto 2: (%.1f, %.1f)\n", p2.latitude, p2.longitude);
+    
+    dist = distancia(p1, p2);
+    printf("Distancia entre os pontos: %.2f\n", dist);
+    return 0;
+}
