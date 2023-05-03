@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct n {
+	int valor;
+	struct n *prox;
+}no;
+
+no* novo(int *v){
+	no *p;
+	p = (no*) malloc(sizeof(no));
+	
+	p -> valor = v;
+	p -> prox = NULL;
+	return p;
+}
+
+no* addfinal(no *p, int v){
+	no *aux = p;
+	if(p == NULL)
+		return novo(v);
+	
+	while(aux -> prox != NULL)
+		aux = aux -> prox;
+	
+	aux -> prox = novo(v);
+	return p;
+}
+
+void mostrar(no* p){
+	while(p!= NULL){
+		printf("%d ",p -> valor);
+		p = p -> prox;
+	}
+}
+
+int main(){
+	no *primeiro = NULL;
+	int opcao, valor;
+	
+	//primeiro = novo(5);
+	//primeiro = addfinal(primeiro, 8);
+	//primeiro = addfinal(primeiro, 10);
+	//mostrar(primeiro);
+	do{
+		
+		printf("\n");
+		printf("*****************************");
+		printf("\n***** SISTEMA DE AGENDA *****\n");
+		printf("*****************************\n");
+		printf("\n");
+		printf("MENU:");
+		printf("\n1 - Digite 1 adicionar um valor na lista:");
+		printf("\n1 - Digite 2 para mostrar os valores:");
+		printf("\n0 - Sair do sistema");
+		printf("\nDigite a opcao desejada: ");
+		scanf("%d",&opcao);
+		
+		switch(opcao){
+			case 0 : {
+				printf("\nSAINDO DO SISTEMA...");
+				break;
+			}
+			case 1 : {
+				printf("Qual valor voce deseja adicionar: ");
+				scanf("%d", &valor);
+				primeiro = addfinal(primeiro, valor);
+				break;
+			}
+			case 2 : {
+				printf("\n");
+				printf("NUMEROS:");
+				mostrar(primeiro);
+				printf("\n");
+				break;
+			}
+			default : {
+				printf("\nNUMERO DIGITADO INVALIDO!");
+				printf("\n");
+				printf("\nRetornando ao menu...");
+				break;
+			}	
+		}
+		printf("\n==================================================================");
+		printf("\n");
+	}while(opcao !=0);
+	
+	return 0;
+}
