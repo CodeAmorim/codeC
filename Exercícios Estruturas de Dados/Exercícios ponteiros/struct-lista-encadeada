@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+/*
+retornar o valor do maior elemento
+procurar se determinado valor consta na lista
+adicionar um elemento na posição x
+remover o último elemento (free(no))
+*/
+
+
 typedef struct n {
 	int valor;
 	struct n *prox;
@@ -15,7 +24,7 @@ no* novo(int *v){
 	return p;
 }
 
-no* addfinal(no *p, int v){
+no* addFinal(no *p, int v){
 	no *aux = p;
 	if(p == NULL)
 		return novo(v);
@@ -27,6 +36,20 @@ no* addfinal(no *p, int v){
 	return p;
 }
 
+no* addInicio(no *p, int v){
+	no *n = novo(v);
+	n -> prox = p;
+	return n;
+}
+
+void mostrarInvertido(no *n){
+	//funcao recursiva
+	if(n != NULL){
+		mostrarInvertido(n -> prox);
+		printf("%d\n", n -> valor);
+	}
+}
+
 void mostrar(no* p){
 	while(p!= NULL){
 		printf("%d ",p -> valor);
@@ -34,14 +57,21 @@ void mostrar(no* p){
 	}
 }
 
+no* retornaMaior(no *p){
+	int maior;
+	maior = p;
+	
+	while(p == NULL){
+		if(p > maior)
+			maior = p;
+	}
+	return maior;
+}
+
 int main(){
 	no *primeiro = NULL;
 	int opcao, valor;
 	
-	//primeiro = novo(5);
-	//primeiro = addfinal(primeiro, 8);
-	//primeiro = addfinal(primeiro, 10);
-	//mostrar(primeiro);
 	do{
 		
 		printf("\n");
@@ -50,8 +80,11 @@ int main(){
 		printf("*****************************\n");
 		printf("\n");
 		printf("MENU:");
-		printf("\n1 - Digite 1 adicionar um valor na lista:");
-		printf("\n1 - Digite 2 para mostrar os valores:");
+		printf("\n1 - Adicionar um valor no inicio da lista:");
+		printf("\n2 - Adicionar um valor no fim da lista:");
+		printf("\n3 - Mostrar os valores:");
+		printf("\n4 - Mostrar os valores invertidos:");
+		printf("\n5 - Mostrar o maior valor:");
 		printf("\n0 - Sair do sistema");
 		printf("\nDigite a opcao desejada: ");
 		scanf("%d",&opcao);
@@ -64,14 +97,28 @@ int main(){
 			case 1 : {
 				printf("Qual valor voce deseja adicionar: ");
 				scanf("%d", &valor);
-				primeiro = addfinal(primeiro, valor);
+				primeiro = addInicio(primeiro, valor);
 				break;
 			}
 			case 2 : {
+				printf("Qual valor voce deseja adicionar: ");
+				scanf("%d", &valor);
+				primeiro = addFinal(primeiro, valor);
+				break;
+			}
+			case 3 : {
 				printf("\n");
 				printf("NUMEROS:");
 				mostrar(primeiro);
 				printf("\n");
+				break;
+			}
+			case 4 : {
+				mostrarInvertido(primeiro);
+				break;
+			}
+			case 5 : {
+				printf("Maior valor: %d", retornaMaior(primeiro));
 				break;
 			}
 			default : {
@@ -81,7 +128,6 @@ int main(){
 				break;
 			}	
 		}
-		printf("\n==================================================================");
 		printf("\n");
 	}while(opcao !=0);
 	
