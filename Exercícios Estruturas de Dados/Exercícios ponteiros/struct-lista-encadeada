@@ -1,135 +1,205 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-/*
-retornar o valor do maior elemento
-procurar se determinado valor consta na lista
-adicionar um elemento na posição x
-remover o último elemento (free(no))
-*/
-
-
 typedef struct n {
-	int valor;
-	struct n *prox;
-}no;
+    int valor;
+    struct n *prox;
+} no;
 
-no* novo(int *v){
-	no *p;
-	p = (no*) malloc(sizeof(no));
-	
-	p -> valor = v;
-	p -> prox = NULL;
-	return p;
+no *novo(int valor) {
+    no *p = (no *)malloc(sizeof(no));
+    p->valor = valor;
+    p->prox = NULL;
+    return p;
 }
 
-no* addFinal(no *p, int v){
-	no *aux = p;
-	if(p == NULL)
-		return novo(v);
-	
-	while(aux -> prox != NULL)
-		aux = aux -> prox;
-	
-	aux -> prox = novo(v);
-	return p;
+no *addFinal(no *p, int valor) {
+    no *novoNo = novo(valor);
+    if (p == NULL)
+        return novoNo;
+
+    no *aux = p;
+    while (aux->prox != NULL)
+        aux = aux->prox;
+
+    aux->prox = novoNo;
+    return p;
 }
 
-no* addInicio(no *p, int v){
-	no *n = novo(v);
-	n -> prox = p;
-	return n;
+no *addInicio(no *p, int valor) {
+    no *novoNo = novo(valor);
+    novoNo->prox = p;
+    return novoNo;
 }
 
-void mostrarInvertido(no *n){
-	//funcao recursiva
-	if(n != NULL){
-		mostrarInvertido(n -> prox);
-		printf("%d\n", n -> valor);
-	}
+void mostrar(no *p) {
+    while (p != NULL) {
+        printf("%d ", p->valor);
+        p = p->prox;
+    }
+    printf("\n");
 }
 
-void mostrar(no* p){
-	while(p!= NULL){
-		printf("%d ",p -> valor);
-		p = p -> prox;
-	}
+void mostrarInvertido(no *n) {
+    if (n == NULL)
+        return;
+    mostrarInvertido(n->prox);
+    printf("%d ", n->valor);
 }
 
-no* retornaMaior(no *p){
-	int maior;
-	maior = p;
-	
-	while(p == NULL){
-		if(p > maior)
-			maior = p;
-	}
-	return maior;
+int retornaMaior(no *p) {
+    if (p == NULL)
+        return -1;
+
+    int maior = p->valor;
+    while (p != NULL) {
+        if (p->valor > maior)
+            maior = p->valor;
+        p = p->prox;
+    }
+    return maior;
 }
 
-int main(){
-	no *primeiro = NULL;
-	int opcao, valor;
-	
-	do{
-		
-		printf("\n");
-		printf("*****************************");
-		printf("\n***** SISTEMA DE AGENDA *****\n");
-		printf("*****************************\n");
-		printf("\n");
-		printf("MENU:");
-		printf("\n1 - Adicionar um valor no inicio da lista:");
-		printf("\n2 - Adicionar um valor no fim da lista:");
-		printf("\n3 - Mostrar os valores:");
-		printf("\n4 - Mostrar os valores invertidos:");
-		printf("\n5 - Mostrar o maior valor:");
-		printf("\n0 - Sair do sistema");
-		printf("\nDigite a opcao desejada: ");
-		scanf("%d",&opcao);
-		
-		switch(opcao){
-			case 0 : {
-				printf("\nSAINDO DO SISTEMA...");
-				break;
-			}
-			case 1 : {
-				printf("Qual valor voce deseja adicionar: ");
-				scanf("%d", &valor);
-				primeiro = addInicio(primeiro, valor);
-				break;
-			}
-			case 2 : {
-				printf("Qual valor voce deseja adicionar: ");
-				scanf("%d", &valor);
-				primeiro = addFinal(primeiro, valor);
-				break;
-			}
-			case 3 : {
-				printf("\n");
-				printf("NUMEROS:");
-				mostrar(primeiro);
-				printf("\n");
-				break;
-			}
-			case 4 : {
-				mostrarInvertido(primeiro);
-				break;
-			}
-			case 5 : {
-				printf("Maior valor: %d", retornaMaior(primeiro));
-				break;
-			}
-			default : {
-				printf("\nNUMERO DIGITADO INVALIDO!");
-				printf("\n");
-				printf("\nRetornando ao menu...");
-				break;
-			}	
-		}
-		printf("\n");
-	}while(opcao !=0);
-	
-	return 0;
+int buscaElemento(no *p, int valor) {
+    while (p != NULL) {
+        if (p->valor == valor)
+            return 1; // Valor encontrado
+        p = p->prox;
+    }
+    return 0; // Valor não encontrado
+}
+
+no *addPosicaoX(no *p, int valor, int posicao) {
+    if (posicao <= 0)
+        return addInicio(p, valor);
+
+    no *novoNo = novo(valor);
+    if (p == NULL)
+        return novoNo;
+
+    no *aux = p;
+    int contador = 1;
+    while (aux->prox != NULL && contador < posicao) {
+        aux = aux->prox;
+        contador++;
+    }
+
+    novoNo->prox = aux->prox;
+    aux->prox = novoNo;
+    return p;
+}
+
+no *removeUltimo(no *p) {
+    if (p == NULL)
+        return NULL;
+
+    if (p->prox == NULL) {
+        free(p);
+        return NULL;
+    }
+
+    no *aux = p;
+    while (aux->prox->prox != NULL)
+        aux = aux->prox;
+
+    free(aux->prox);
+    aux->prox = NULL;
+    return p;
+}
+
+int main() {
+    no *primeiro = NULL;
+    int opcao, valor;
+
+    do {
+        printf("\n*****************************");
+        printf("\n***** SISTEMA DE AGENDA *****\n");
+        printf("*****************************\n");
+        printf("\n");
+        printf("MENU:");
+        printf("\n1 - Adicionar um valor no inicio da lista:");
+        printf("\n2 - Adicionar um valor no fim da lista:");
+        printf("\n3 - Mostrar os valores:");
+        printf("\n4 - Mostrar os valores invertidos:");
+        printf("\n5 - Mostrar o maior valor:");
+        printf("\n6 - Buscar um valor:");
+        printf("\n7 - Adicionar um valor em uma posicao:");
+        printf("\n8 - Remover o ultimo elemento:");
+        printf("\n0 - Sair do sistema");
+        printf("\nDigite a opcao desejada: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 0: {
+                printf("\nSAINDO DO SISTEMA...");
+                break;
+            }
+            case 1: {
+                printf("Qual valor voce deseja adicionar: ");
+                scanf("%d", &valor);
+                primeiro = addInicio(primeiro, valor);
+                break;
+            }
+            case 2: {
+                printf("Qual valor voce deseja adicionar: ");
+                scanf("%d", &valor);
+                primeiro = addFinal(primeiro, valor);
+                break;
+            }
+            case 3: {
+                printf("\n");
+                printf("NUMEROS:");
+                mostrar(primeiro);
+                printf("\n");
+                break;
+            }
+            case 4: {
+                printf("Valores invertidos: ");
+                mostrarInvertido(primeiro);
+                printf("\n");
+                break;
+            }
+            case 5: {
+                int maior = retornaMaior(primeiro);
+                if (maior == -1)
+                    printf("A lista esta vazia!\n");
+                else
+                    printf("Maior valor: %d\n", maior);
+                break;
+            }
+            case 6: {
+                printf("Qual valor voce deseja buscar: ");
+                scanf("%d", &valor);
+                int encontrado = buscaElemento(primeiro, valor);
+                if (encontrado)
+                    printf("O valor %d foi encontrado na lista.\n", valor);
+                else
+                    printf("O valor %d nao foi encontrado na lista.\n", valor);
+                break;
+            }
+            case 7: {
+                printf("Qual valor voce deseja adicionar: ");
+                scanf("%d", &valor);
+                int posicao;
+                printf("Qual posicao voce deseja adicionar: ");
+                scanf("%d", &posicao);
+                primeiro = addPosicaoX(primeiro, valor, posicao);
+                break;
+            }
+            case 8: {
+                primeiro = removeUltimo(primeiro);
+                printf("Ultimo elemento removido.\n");
+                break;
+            }
+            default: {
+                printf("\nNUMERO DIGITADO INVALIDO!");
+                printf("\n");
+                printf("\nRetornando ao menu...");
+                break;
+            }
+        }
+        printf("\n");
+    } while (opcao != 0);
+
+    return 0;
 }
