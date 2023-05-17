@@ -1,0 +1,186 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h> //strcpy
+#include<conio.h> //getch
+#include<locale.h>
+#include<time.h>
+
+// cada pessoa tem um timestamp()
+// RG COMO INT
+typedef
+struct filaBanco{
+	char nome[30];
+	int rg;
+	struct filaBanco *prox;
+}pessoa;
+
+pessoa *cadastroPessoa(char nome[30], int rg){
+	
+	pessoa *novo;
+	novo = (pessoa*) malloc (sizeof(pessoa));
+	
+	// strcpy copia o conteúdo de uma string para outra string
+	strcpy(novo->nome, nome);
+	novo->rg = rg;
+	novo->prox = NULL;
+	
+	return novo;
+}
+
+pessoa * fichaFila(pessoa *inicio, pessoa *novo){
+	
+	pessoa *aux = inicio;
+	
+	if(aux == NULL){
+		return novo;
+	} 
+	
+	for(;aux->prox != NULL;aux = aux->prox);
+	
+	aux->prox = novo;
+	return inicio;	
+}
+
+
+void totalFila(pessoa *inicio){
+	
+	pessoa *aux = inicio;
+	
+	int i = 0;
+	
+	for(;aux != NULL; i++){
+		aux = aux->prox;
+	}
+	
+	printf("\nExistem %d pessoa(s) na fila.", i);
+	//getch ler um caractere do teclado sem exibir o caractere na tela
+	// volta a tela principal de menu ao pressionar qualquer caractere
+	getch();
+}
+
+pessoa *removerPessoa(pessoa *inicio, int rg){
+	
+	pessoa *aux = inicio, *anterior = NULL, *limpar = NULL;
+	
+	//if (strcmp(aux->rg, rg) != 0)
+	
+	while((aux != NULL) && (strcmp(aux->rg, rg) != 0)){
+		anterior = aux;
+		aux = aux->prox;
+	}
+	
+	if (strcmp(aux->rg, rg) == 0){
+		
+		if(anterior == NULL){//primeiro lugar da fila
+			limpar = aux;
+			free(limpar);
+			return aux->prox; //retorna a partir do proximo
+		}
+
+		else if(aux->prox == NULL){//ultimo da fila
+			limpar = aux;
+			free(limpar);
+			anterior->prox = NULL; //é substituido pelo fim
+			return inicio;
+		}
+		
+		else{ //no meio da fila
+			anterior->prox = aux->prox;
+			limpar = aux;
+			free(limpar);
+			return inicio;
+		}
+	}
+	else{
+		printf("RG inválido!");
+	}
+}
+
+void mostrar(pessoa *inicio){
+
+	if(inicio!= NULL){		
+		fflush(stdin);
+		printf("Nome: %s\n", inicio->nome);
+		printf("RG: %d\n", inicio->rg);
+		printf("\n");
+
+		mostrar(inicio->prox);	
+	}
+}
+
+int main(){
+	
+	setlocale(LC_ALL, "portuguese");
+	int opcao, Atend = 0;
+	pessoa *p = NULL;
+	
+	do{
+		
+		system("cls"); 
+		//limpa a tela do console
+		printf("----MENU DA RECEPCAO-------------------\n");
+		printf("1 - Pegar um ficha                     \n");		
+		printf("2 - Desistir do atendimento            \n");
+		printf("3 - Mostrar todos da fila              \n");
+		printf("---------------------------------------\n");
+		printf("----MENU DO CAIXA ---------------------\n");
+		printf("4 - Chamar próximo da fila             \n");
+		printf("5 - Quantidade de fichas    		   \n");
+		printf("0 - Sair                               \n");
+		printf("---------------------------------------\n");
+		printf("Digite sua opcão:                      \n");
+		printf("---------------------------------------\n");
+		fflush(stdin);
+		scanf("%d", &opcao);
+		
+		switch(opcao){
+			case 1:{
+				pessoa *novo;
+				char nome[30];
+				int rg;
+				
+				fflush(stdin);
+				printf("\nDigite seu nome: ");
+				gets(nome);
+				printf("\nDigite seu RG: ");
+				scanf("%d", &rg);
+				novo = cadastroPessoa(nome, rg);
+				p = fichaFila(p, novo);
+				break;
+			}
+			case 2:{
+				int rg;
+				fflush(stdin);
+				printf("\nDigite seu RG: ");
+				scanf("%d", &rg);
+				p = removerPessoa(p, rg);							
+				break;
+			}
+			case 3:{
+				mostrar(p);
+				getch();
+				break;
+			}
+			case 4:{
+				p = removerPessoa(p, p->rg);
+				break;
+			}
+			case 5:{
+				totalFila(p);
+				break;
+			}
+			case 6:{
+				totalFila(p);
+				break;
+			}
+			case 0:
+				break;
+			default:
+				printf("Opção inválida!");
+				getch();
+				break;
+		}					
+	}while(opcao!=0);
+	
+	return 0;
+}
