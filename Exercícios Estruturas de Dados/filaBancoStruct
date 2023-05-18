@@ -3,28 +3,28 @@
 #include<string.h> //strcpy
 #include<conio.h> //getch
 #include<locale.h>
+#include<time.h>
 
-typedef
-struct filaBanco{
+typedef struct filaBanco{
 	char nome[30];
 	char rg[10];
+	time_t timestamp;
 	struct filaBanco *prox;
-}pessoa;
+} pessoa;
 
-pessoa * cadastroPessoa(char nome[30], char rg[10]){
-		
+pessoa *cadastroPessoa(char nome[30], char rg[10]){
 	pessoa *novo;
 	novo = (pessoa*) malloc (sizeof(pessoa));
 
-	// strcpy copia o conteúdo de uma string para outra string
 	strcpy(novo->nome, nome);
 	strcpy(novo->rg, rg);
+	novo->timestamp = time(NULL); // Armazena o timestamp de entrada
 	novo->prox = NULL;
-	
+
 	return novo;
 }
 
-pessoa * fichaFila(pessoa *inicio, pessoa *novo){
+pessoa *fichaFila(pessoa *inicio, pessoa *novo){
 	
 	pessoa *aux = inicio;
 	
@@ -40,9 +40,7 @@ pessoa * fichaFila(pessoa *inicio, pessoa *novo){
 
 
 void totalFila(pessoa *inicio){
-	
 	pessoa *aux = inicio;
-	
 	int i = 0;
 	
 	for(;aux != NULL; i++){
@@ -55,46 +53,34 @@ void totalFila(pessoa *inicio){
 	getch();
 }
 
-pessoa *removerPessoa(pessoa *inicio, char rg[]){
-	
-	pessoa *aux = inicio, *anterior = NULL, *limpar = NULL;
-	
-	while((aux != NULL) && (strcmp(aux->rg, rg) != 0)){
-		anterior = aux;
-		aux = aux->prox;
-	}
-	
-	if (strcmp(aux->rg, rg) == 0){
-		
-		if(anterior == NULL){//primeiro lugar da fila
-			limpar = aux;
-			free(limpar);
-			return aux->prox; //retorna a partir do proximo
-		}
+pessoa* removerPessoa(pessoa* inicio, char rg[]) {
+    pessoa* aux = inicio;
+    pessoa* anterior = NULL;
+    pessoa* limpar = NULL;
 
-		else if(aux->prox == NULL){//ultimo da fila
-			limpar = aux;
-			free(limpar);
-			anterior->prox = NULL; //é substituido pelo fim
-			return inicio;
-		}
-		
-		else{ //no meio da fila
-			anterior->prox = aux->prox;
-			limpar = aux;
-			free(limpar);
-			return inicio;
-		}
-		
-	}
-	else{
-		printf("RG inválido!");
-	}
+    while (aux != NULL && strcmp(aux->rg, rg) != 0) {
+        anterior = aux;
+        aux = aux->prox;
+    }
+
+    if (aux != NULL && strcmp(aux->rg, rg) == 0) {
+        if (anterior == NULL) { // Primeiro lugar da fila
+            limpar = aux;
+            inicio = aux->prox;
+            free(limpar);
+        } else {
+            limpar = aux;
+            anterior->prox = aux->prox;
+            free(limpar);
+        }
+    } else {
+        printf("RG inválido!");
+    }
+    return inicio;
 }
 
 void mostrar(pessoa *inicio){
-
-	if(inicio!= NULL){		
+	if(inicio != NULL){		
 		fflush(stdin);
 		printf("Nome: %s\n", inicio->nome);
 		printf("RG: %s\n", inicio->rg);
@@ -104,26 +90,60 @@ void mostrar(pessoa *inicio){
 	}
 }
 
-pessoa *menuCaixa(pessoa * p, int *qteAtend){
+void mostrarTempoFila(pessoa *inicio, char rg[]) {
+	pessoa *aux = inicio;
+
+	while (aux != NULL && strcmp(aux->rg, rg) != 0) {
+		aux = aux->prox;
+	}
+
+	if (aux != NULL && strcmp(aux->rg, rg) == 0) {
+		printf("Tempo na fila para RG %s: %lld segundos\n", rg, (long long)(time(NULL) - aux->timestamp));
+	} else {
+		printf("RG não encontrado na fila!\n");
+	}
+}
+
+void calcularTempoMedio(pessoa *inicio) {
+    pessoa *aux = inicio;
+    int contador = 0;
+    time_t somaTempos = 0;
+
+    while (aux != NULL) {
+        somaTempos += time(NULL) - aux->timestamp;
+        contador++;
+        aux = aux->prox;
+    }
+
+    if (contador > 0) {
+        time_t tempoMedio = somaTempos / contador;
+        printf("Tempo médio de espera em fila: %lld segundos\n", (long long)tempoMedio);
+    } else {
+        printf("Não há pessoas na fila!\n");
+    }
+}
+
+pessoa *menuCaixa(pessoa *p, int *qteAtend){
 	int op;
 	
 	do{
-						
-		system("cls");
-				
-		printf("---- MENU DO CAIXA ----\n");
-		printf("1 - Chamar próximo     \n");
-		printf("2 - Qts tem na fila    \n");
-		printf("0 - Voltar             \n");
-		printf("-----------------------\n");
-		printf("Digite sua opcao:      \n");
-		printf("-----------------------\n");
+		system("cls");	
+		
+		printf("MENU DO CAIXA -----------------------------\n");
+		printf("1 - Chamar o próximo         			   \n");
+		printf("2 - Quantidade de fichas    			   \n");
+		printf("3 - Mostrar tempo na fila  				   \n");
+		printf("4 - Mostrar o tempo medio de espera na fila\n");
+		printf("0 - Voltar                   			   \n");
+		printf("-------------------------------------------\n");
+		printf("Digite sua opcão:           			   \n");
+		printf("-------------------------------------------\n");
 		fflush(stdin);
 		
 		scanf("%d", &op);
 		
 		switch(op){
-			case 1:{				
+			case 1:{
 				p = removerPessoa(p, p->rg);
 				break;
 			}
@@ -131,27 +151,39 @@ pessoa *menuCaixa(pessoa * p, int *qteAtend){
 				totalFila(p);
 				break;
 			}
+			case 3:{
+				char rg[10];
+				fflush(stdin);
+				printf("\nDigite o RG: ");
+				gets(rg);
+				mostrarTempoFila(p, rg);
+				getch();
+				break;
+			}
+			case 4: {
+		    calcularTempoMedio(p);
+		    getch();
+		    break;
+			}
 			case 0:
 				return p;
 				break;
 			default:
 				break;
-		}
-					
+		}		
 	}while(op != 0);
 }
 
-pessoa *menuRecepcao(pessoa * p, int *qteAtend){
-	
-		int opcao;
-	do{
-						
+pessoa *menuRecepcao(pessoa *p, int *qteAtend){
+	int opcao;
+	do{	
 		system("cls");		
 		
 		printf("----MENU DA RECEPCAO-------------------\n");
-		printf("1 - Pegar um ficha                     \n");		
+		printf("1 - Pegar uma ficha                    \n");		
 		printf("2 - Desistir do atendimento            \n");
 		printf("3 - Mostrar todos da fila              \n");
+		printf("4 - Mostrar meu tempo na fila          \n");
 		printf("0 - Voltar                             \n");
 		printf("---------------------------------------\n");
 		printf("Digite sua opcao:                      \n");
@@ -161,38 +193,37 @@ pessoa *menuRecepcao(pessoa * p, int *qteAtend){
 		
 		switch(opcao){
 			case 1:{
-				
 				pessoa *novo;
 				char nome[30], rg[10];
-				
 				fflush(stdin);
 				printf("\nDigite seu nome: ");
 				gets(nome);
 				printf("\nDigite seu RG: ");
-				gets(rg);
-				
+				gets(rg);	
 				novo = cadastroPessoa(nome, rg);
 				p = fichaFila(p, novo);
-			
 				break;
 			}
 			case 2:{
-				char rg[10];
-				
+				char rg[10];	
 				fflush(stdin);
 				printf("\nDigite seu RG: ");
-				gets(rg);
-				
-				p = removerPessoa(p, rg);
-											
+				gets(rg);		
+				p = removerPessoa(p, rg);							
 				break;
 			}
-			case 3:{
-				
+			case 3:{		
 				mostrar(p);
-				
 				getch();
-				
+				break;
+			}
+			case 4:{
+				char rg[10];
+				fflush(stdin);
+				printf("\nDigite o RG: ");
+				gets(rg);
+				mostrarTempoFila(p, rg);
+				getch();
 				break;
 			}	
 			case 0:
@@ -214,7 +245,6 @@ int main(){
 	pessoa *p = NULL;
 	
 	do{
-		
 		system("cls");
 		
 		printf("---------MENU-------------\n");
@@ -230,39 +260,26 @@ int main(){
 		switch(opc){
 			
 			case 1:{
-					
 				p = menuCaixa(p, &Atend);
-			
-			break;
-			}
-			
-			case 2:{
-				
-				p = menuRecepcao(p, &Atend);
-				
-			
-			break;
-			}
-			case 3:
-				{
-					totalFila(p);
-					break;
-				}
-				
-			case 0:
-				
-				printf("Saindo...");
 				break;
-				
+			}
+			case 2:{
+				p = menuRecepcao(p, &Atend);
+				break;
+			}
+			case 3:{
+				totalFila(p);
+				break;
+			}
+			case 0:
+				printf("Saindo...");
+				break;	
 			default:
-				
 				printf("Opcao invalida!");
 				getch();
-				break;
-				
-			
+				break;		
 		}		
-						
-	}while(opc!=0);
+	}while(opc != 0);
 	
+	return 0;
 }
