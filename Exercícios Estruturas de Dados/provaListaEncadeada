@@ -1,0 +1,187 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef
+struct ListaPessoa{
+	char nome[30];
+	char rg[10];
+	//time_t timestamp;
+	struct ListaPessoa* prox;
+}no;
+
+no* criarNovoNo(char nome[30], char rg[10]){
+	no *novo = (no*) malloc (sizeof(no));
+
+	strcpy(novo->nome, nome);
+	strcpy(novo->rg, rg);
+	novo->prox = NULL;
+
+	return novo;
+}
+
+no *fichaFila(no* p, no* novo){
+	
+	no* aux = p;
+	
+	if(aux == NULL){
+		return novo;
+	} 
+	
+	for(;aux->prox != NULL;aux = aux->prox);
+	
+	aux->prox = novo;
+	return p;	
+}
+
+no* removerNo(no* inicio) {
+	char rg[10];
+    no* aux = inicio;
+    no* anterior = NULL;
+    no* limpar = NULL;
+    
+    
+    if(inicio == NULL){
+    	printf("A lista esta vazia!");
+    	getch();
+    	return main();
+	}
+	else{
+		printf("Digite o rg do no a ser removido: ");
+		fflush(stdin);
+		gets(rg);
+	}
+
+    while (aux != NULL && strcmp(aux->rg, rg) != 0) {
+        anterior = aux;
+        aux = aux->prox;
+    }
+	
+	// se tiver somente um rg ele pula para o return
+    if (aux != NULL && strcmp(aux->rg, rg) == 0) {
+        if (anterior == NULL) { // Primeiro lugar da fila
+            limpar = aux;
+            inicio = aux->prox;
+            free(limpar);
+        } else {
+            limpar = aux;
+            anterior->prox = aux->prox;
+            free(limpar);
+        }
+    } else {
+        printf("RG inválido!");
+    }
+    return inicio;
+}
+
+no* removerPrimeiroNo(no* inicio){
+	no* aux = inicio;
+	no* anterior = NULL;
+    no* limpar = NULL;
+    
+    if(aux == NULL){
+    	printf("Nao existe proximo na lista.\n");
+        return inicio;
+	}
+	
+	if(aux != NULL && aux->prox != NULL || aux != NULL){
+        limpar = aux;
+        inicio = aux->prox;
+        free(limpar);
+    }
+    return inicio;
+}
+
+void mostrar(no* p){
+	if(p != NULL){
+		fflush(stdin);
+		printf("Nome: %s\n", p->nome);
+		printf("RG: %s\n", p->rg);
+		printf("\n");
+		mostrar(p->prox);
+	}
+	
+}
+
+/*
+A chamada recursiva ocorre antes da impressão dos dados do nó atual. 
+Isso faz com que os nós sejam percorridos em ordem inversa, já que 
+a função só imprime os dados do nó atual após percorrer todos os 
+nós subsequentes.
+
+É DO COMPORTAMENTO DA LISTA ENCADEADA, primeiro ela percorre todo a lista
+até achar o prox == NULL, quando encontra, ele volta printando
+*/
+
+void mostrarFilaInvertida(no* p) {
+
+    if (p != NULL) {
+        mostrarFilaInvertida(p->prox);
+        printf("\nNome: %s \nRG: %s\n", p->nome, p->rg);
+        getch();
+    }
+
+}
+
+int main(){
+	no* p = NULL;
+	int opc;
+	
+	do{
+		system("cls");
+		
+		printf("1 - Inserir no\n");
+		printf("2 - Remover no\n");
+		printf("3 - Mostrar lista\n");
+		printf("4 - Mostrar lista invertida\n");
+		printf("5 - Remover primeiro no da lista\n");
+		scanf("%d", &opc);
+		switch(opc){
+			case 1:{
+				no* novo;
+				char nome[30], rg[10];
+				fflush(stdin);
+				printf("\nDigite seu nome: ");
+				gets(nome);
+				printf("\nDigite seu RG: ");
+				gets(rg);	
+				novo = criarNovoNo(nome, rg);
+				p = fichaFila(p, novo);
+				break;
+			}
+			case 2:{
+				p = removerNo(p);
+				break;
+			}
+			case 3:{
+				mostrar(p);
+				if(p != NULL){
+					getch();
+				}
+				break;
+			}
+			case 4:{
+				mostrarFilaInvertida(p);
+				break;
+			}
+			case 5:{
+				p = removerPrimeiroNo(p);
+				if(p != NULL){
+					printf("Nova lista:\n");
+					mostrar(p);	
+				}
+				getch();
+				break;
+			}
+			case 0:
+				printf("\nSaindo...");
+				break;
+			default:
+				printf("\nOpcao invalida!");
+				break;
+		}
+	}while(opc != 0);
+	
+	
+	return 0;
+}
