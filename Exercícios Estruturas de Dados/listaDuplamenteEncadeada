@@ -1,0 +1,140 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef
+struct n {
+	int valor;
+	struct n* prox;
+	struct n* ant;
+}No;
+
+No* inserir(No* p, int valor){
+	No* novo = (No*) malloc(sizeof(No));
+	
+	novo->valor = valor;
+	novo->prox = NULL;
+	
+	if(p == NULL){
+		novo->ant = NULL;
+		return novo;
+	}
+	
+	while(p-> prox != NULL){
+		p = p->prox;
+	}
+	
+	p->prox = novo;
+	novo->ant = p;
+	
+	return novo;
+}
+
+void mostrar(No* p) {
+	if (p != NULL) {
+		while (p->prox != NULL) {
+			p = p->prox;
+		}
+		while (p != NULL) {
+			printf("%d -> ", p->valor);
+			p = p->ant;
+		}
+	} else {
+		printf("Lista vazia!");
+	}
+	printf("\n");
+}
+
+void mostrarInvertido(No* p) {
+	if (p != NULL) {
+		while (p->prox != NULL) {
+			p = p->prox;
+		}
+		while (p != NULL) {
+			printf("%d -> ", p->valor);
+			p = p->ant;
+		}
+	} else {
+		printf("Lista vazia!");
+	}
+	printf("\n");
+}
+
+
+No* inserirOrdenado(No* p, int valor){
+	No* novo = (No*) malloc(sizeof(No));
+	novo->valor = valor;
+	
+	if(p == NULL){
+		novo->ant = NULL;
+		return novo;
+	}
+	
+	while (p->ant != NULL) {
+		p = p->ant;
+	}
+	
+	while(p->prox != NULL &&){
+		p = p->prox;
+	}
+	
+	if(p->prox->valor < novo->valor)){
+		p->ant = novo;
+		novo->prox = p;
+	}
+
+	return novo;
+}
+
+
+int main(){
+	No* p = NULL;
+	int opc = 0;	
+	
+	do{
+	
+		system("cls");
+		
+		printf("Digite sua opcao:\n");
+		printf("1 - Inserir um novo valor\n");
+		printf("2 - Mostrar lista \n");
+		printf("3 - Mostrar lista invertida \n");
+		printf("4 - Inserir em ordem crescente \n");
+		printf("0 - Sair \n");
+		scanf("%d", &opc);
+		switch(opc){
+			case 1:{
+				int valor;
+				printf("Digite um valor:");
+				scanf("%d", &valor);
+				p = inserir(p, valor);
+				break;
+			}
+			case 2:{
+				mostrar(p);
+				getch();
+				break;
+			}
+			case 3:{
+				mostrarInvertido(p);
+				getch();
+				break;
+			}
+			case 4:{
+				int valor;
+				printf("Digite um valor:");
+				scanf("%d", &valor);
+				p = inserirOrdenado(p, valor);
+				break;
+			}
+			case 0:
+				printf("Saindo...");
+				break;
+			default:
+				printf("Opcao invalida!");
+				getch();
+		}
+	}while(opc != 0);
+	return 0;
+}
+
+//INSERIR EM ORDEM CRESCENTE
