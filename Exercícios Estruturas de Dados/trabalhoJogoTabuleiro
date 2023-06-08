@@ -1,0 +1,68 @@
+//FUNÇÃO RAND COMO DADO
+//REGRAS
+// DUAS LISTAS, UMA CIRCULAR E OUTRA DUPLAMENTE ENCADEADA
+
+/*30 CASAS
+REGRAS PARA CADA CASA
+LISTA CIRCULAR PARA OS 4 JOGADORES
+	TODA VEZ QUE CHEGAR NUMA CASA QUE PERDE UMA VEZ FAZ COUNT-- COMO CONTROLE DE JOGADA
+	CASA = CASA->PROX WHILE DADO > 0
+	
+1 - MONTAR
+2 - FAZER INSERT
+3 - INFORMAR O NOME DOS JOGADORES
+4 - CRIAR LÓGICA
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef
+struct T {
+	int casa;
+	char legenda[30];
+	int castigo
+	int regra;
+	struct T *prox, *ant;
+}tabuleiro;
+
+typedef
+struct L {
+	char nome[30];
+	int castigo;
+	struct L* prox;
+	tabuleiro* casa;
+}jogador;
+
+tabuleiro* ADD(int c, char* legenda, int castigo, int regra, tabuleiro* p){
+	tabuleiro* novo = (tabuleiro*) malloc(sizeof(tabuleiro));
+	strcpy(novo->legenda, legenda);
+	
+	novo->casa = c;
+	novo->castigo = castigo;
+	novo->regra = regra;
+	novo->prox = NULL;
+	
+	if(p == NULL){
+		novo->ant = NULL;
+		return novo;
+	}
+	
+	while(p->prox != NULL){
+		p = p->prox;
+	}
+	
+	p->prox = novo;
+	novo->ant = p;
+	
+	return novo;
+}
+
+int main(){
+	tabuleiro* inicio = NULL;
+	INICIO = ADD(1, "CASA 1", 0, 1);	
+	INICIO = ADD(2, "CASA 2", 0, 1);
+	INICIO = ADD(3, "CASA 3", 0, 1);	
+	
+	return 0;
+}
