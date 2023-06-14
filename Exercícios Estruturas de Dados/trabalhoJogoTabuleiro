@@ -1,27 +1,14 @@
-//FUNÇÃO RAND COMO DADO
-//REGRAS
-// DUAS LISTAS, UMA CIRCULAR E OUTRA DUPLAMENTE ENCADEADA
-
-/*30 CASAS
-REGRAS PARA CADA CASA
-LISTA CIRCULAR PARA OS 4 JOGADORES
-	TODA VEZ QUE CHEGAR NUMA CASA QUE PERDE UMA VEZ FAZ COUNT-- COMO CONTROLE DE JOGADA
-	CASA = CASA->PROX WHILE DADO > 0
-	
-1 - MONTAR
-2 - FAZER INSERT
-3 - INFORMAR O NOME DOS JOGADORES
-4 - CRIAR LÓGICA
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h> //strcpy
+#include <time.h>
+
 
 typedef
 struct T {
 	int casa;
 	char legenda[30];
-	int castigo
+	int castigo;
 	int regra;
 	struct T *prox, *ant;
 }tabuleiro;
@@ -32,6 +19,7 @@ struct L {
 	int castigo;
 	struct L* prox;
 	tabuleiro* casa;
+	tabuleiro * regra;
 }jogador;
 
 tabuleiro* ADD(int c, char* legenda, int castigo, int regra, tabuleiro* p){
@@ -50,7 +38,7 @@ tabuleiro* ADD(int c, char* legenda, int castigo, int regra, tabuleiro* p){
 	
 	while(p->prox != NULL){
 		p = p->prox;
-	}
+	}	
 	
 	p->prox = novo;
 	novo->ant = p;
@@ -58,11 +46,253 @@ tabuleiro* ADD(int c, char* legenda, int castigo, int regra, tabuleiro* p){
 	return novo;
 }
 
+jogador* inserirJogador(jogador* p, char nome[]) {
+    jogador* novo = (jogador*)malloc(sizeof(jogador));
+    strcpy(novo->nome, nome);
+    novo->prox = NULL;
+    novo->casa = 0;
+	novo->castigo = 0;
+
+    if (p == NULL) {
+        novo->prox = novo;
+        return novo;
+    }
+
+    jogador* aux = p;
+    while (aux->prox != p) {
+        aux = aux->prox;
+    }
+
+    aux->prox = novo;
+    novo->prox = p;
+
+    return p;
+}
+
+void mostrar(jogador* p){
+	jogador * aux = p;
+	if(p == NULL){
+		printf("Lista vazia!");
+		return;
+	}
+	
+	do{
+		printf("%s ->", aux->nome);
+		aux = aux->prox;
+	}while(aux != p);
+}
+
+void mostrarTabuleiro(tabuleiro * tabuleiro) {
+	
+	while (tabuleiro->ant != NULL) tabuleiro = tabuleiro->ant;
+
+	while (tabuleiro != NULL) {
+		printf("\n _________________________ \n%s", tabuleiro->legenda);
+		tabuleiro = tabuleiro -> prox;
+	}
+	getch();
+}
+void classificacaoPlayers (jogador * player) {
+	jogador *aux = player;
+	
+	do {
+		printf("/////////////////////\n");
+		printf("%s \n", aux->nome);
+		printf("Posicao: %i \n", aux->casa);
+		printf("Castigo: %i \n", aux->castigo);
+		printf("/////////////////////\n");
+		aux = aux->prox;
+	} while (aux != player);
+	getch();
+}
+
+void jogar(tabuleiro* tabuleiro, jogador* jogador){
+	int dado, casaAtual, totalRegra, castigo, vencedor = 0, opc;
+	
+	do{
+		while(vencedor != 1){
+			system("cls");
+		    	
+			printf("1 - Iniciar partida\n");
+			printf("2 - Mostrar tabuleiro\n");
+			printf("3 - Ver classificacao dos jogadores \n");
+			printf("0 - Sair\n");
+			scanf("%d", &opc);
+			
+			switch(opc){	
+				case 1:{
+					printf("Jogando os dados...\n");
+					//Zera o tabuleiro
+					while(tabuleiro->ant != NULL) tabuleiro = tabuleiro->ant;
+						
+					//Recebe a primeira casa do tabuleiro
+					if(jogador->casa == 0) jogador->casa = tabuleiro->casa;
+						
+					if(jogador->castigo == 0){//o 'nao castigo' baliza a lógica
+					
+						//casa atual
+						printf("==========================\n");
+						printf("Jogador %s esta na casa %d\n", jogador->nome, jogador->casa);
+							
+						//roda o dado --nao funcionaaaaaa!!!!!!!!!!!!!!!!!!!!!!!!
+						dado = (rand() % (6 - 1 + 1)+1);
+							
+						casaAtual = jogador->casa;
+						casaAtual = casaAtual + dado;
+							
+						//Garante que se chegar num numero inválido, ele nao trave o jogo
+						if(casaAtual >= 20){
+							printf("Parabens %s! Voce venceu!\n", jogador->nome);
+							printf("Voltando ao menu principal...\n");
+							free(jogador);
+							vencedor = 1;
+							getch();
+							main();
+						}
+							
+						//percorre o tabuleiro até a casa onde deve ficar
+						while(casaAtual != tabuleiro->casa) tabuleiro = tabuleiro->prox;
+						jogador->casa = tabuleiro->casa; //Completa a ação de percorrer as casas
+						printf("Jogador %s andou %d casas e esta na posicao %d \n", jogador->nome, dado, jogador->casa);
+						printf("==========================\n");
+						getch();
+							
+							
+							
+						if(tabuleiro->castigo >= 1){
+							printf("Xiiii...Jogador %s vai ficar sem jogar por %d rodada \n", jogador->nome, tabuleiro->castigo);
+							getch();
+						}
+						
+						jogador->castigo = tabuleiro->castigo;
+						jogador->regra = tabuleiro->regra;
+				
+						if(tabuleiro->regra >= 1){
+							printf("Avance %d casas \n", tabuleiro->regra);
+							totalRegra = jogador->casa; //NAO CONSEGUI FAZER SÓ COM PONTEIRO DO jogador->casa + tabuleiro->regra
+							totalRegra = totalRegra + tabuleiro->regra;
+								
+							while(totalRegra != tabuleiro->casa) tabuleiro = tabuleiro->prox;
+							jogador->casa = tabuleiro->casa; //Completa a ação de percorrer as casas
+								
+							printf("Jogador %s esta na posicao %d \n", jogador->nome, jogador->casa);
+							getch();
+							//verifica se o jogador ganhou
+							if(casaAtual >= 20){
+								printf("Parabens %s! Voce venceu!\n", jogador->nome);
+								printf("Voltando ao menu principal...\n");
+								free(jogador);
+								vencedor = 1;
+								getch();
+								main();
+							}
+						}
+						else if(tabuleiro->regra < 0){
+							if(tabuleiro->regra < -7){
+								printf("Ma sorte :(...Volte %d casas!\n", tabuleiro->regra + 16);
+							}
+							if(-7 < tabuleiro->regra < 0){
+								printf("Volte %d casas!\n", tabuleiro->regra);
+							}
+								totalRegra = tabuleiro->casa;
+								totalRegra = tabuleiro->regra + totalRegra; 
+								while(tabuleiro->ant != NULL) tabuleiro = tabuleiro->ant;
+								while (totalRegra != tabuleiro->casa) tabuleiro = tabuleiro->prox;	
+								jogador->casa = tabuleiro->casa;
+								printf("Jogador %s esta na posicao %d \n", jogador->nome, jogador->casa);
+								getch();
+								totalRegra = NULL;	
+							}
+					}else if(jogador->castigo >= 1){
+						printf("Jogador %s esta de castigo por %d rodadas \n", jogador->nome, jogador->castigo);
+						castigo = jogador->castigo;
+						castigo = castigo - 1;
+						jogador->castigo = castigo;
+						getch();
+					}
+					jogador = jogador->prox;
+					break;
+				}
+				case 2:{
+					mostrarTabuleiro(tabuleiro);
+					break;
+				}
+				case 3:{
+					classificacaoPlayers(jogador);
+					break;
+				}
+				case 0:
+					break;
+					
+				default:
+					break;
+			}
+		}
+	}while(opc != 0);
+}
+
 int main(){
 	tabuleiro* inicio = NULL;
-	INICIO = ADD(1, "CASA 1", 0, 1);	
-	INICIO = ADD(2, "CASA 2", 0, 1);
-	INICIO = ADD(3, "CASA 3", 0, 1);	
+	jogador* listaJogadores = NULL;
+	int opc = 0;
+	//tabuleiro* ADD(int c, char* legenda, int castigo, int regra, tabuleiro* p){
+
+	inicio = ADD (0, "\n|         INICIO          |", 0, 0, inicio);
+	inicio = ADD (1, "\n === CASA 1 === ", 0, 0, inicio);
+	inicio = ADD (2, "\n === CASA 2 === \n AVANCE 2 CASAS \n", 0, 2, inicio);
+	inicio = ADD (3, "\n === CASA 3 === ", 0, 2, inicio);
+	inicio = ADD (4, "\n === CASA 4 === ", 0, 0, inicio);
+	inicio = ADD (5, "\n === CASA 5 === ", 0, 0, inicio);
+	inicio = ADD (6, "\n === CASA 6 === \n FIQUE 1 RODADA SEM JOGAR \n", 1, 0, inicio);
+	inicio = ADD (7, "\n === CASA 7 === ", 0, 0, inicio);
+	inicio = ADD (8, "\n === CASA 8 === ", 0, 0, inicio);
+	inicio = ADD (9, "\n === CASA 9 === \n VOLTE 2 CASAS \n", 0, -2, inicio);
+	inicio = ADD (10, "\n === CASA 10 === \n", 0, 0, inicio);
+	inicio = ADD (11, "\n === CASA 11 === \n", 0, 0, inicio);
+	inicio = ADD (12, "\n === CASA 12 === \n", 0, 0, inicio);
+	inicio = ADD (13, "\n === CASA 13 === \n AVANCE 2 CASAS \n", 0, 2, inicio);
+	inicio = ADD (14, "\n === CASA 14 === \n AVANCE 1 CASA \n", 0, 1, inicio);
+	inicio = ADD (15, "\n === CASA 15 === \n", 0, 0, inicio);
+	inicio = ADD (16, "\n === CASA 16 === \n", 0, 0, inicio);
+	inicio = ADD (17, "\n === CASA 17 === \n", 0, 0, inicio);
+	inicio = ADD (18, "\n === CASA 18 === \n", 0, 0, inicio);
+	inicio = ADD (19, "\n === CASA 19 === \n VOLTE 8 CASAS \n", 0, -8, inicio);
+	inicio = ADD (20, "\n === CASA 20 === \n FIM", 0, 0, inicio);
 	
+	do{
+		system("cls");
+		
+		printf("Digite sua opcao:\n");
+		printf("1 - Inserir jogador\n");
+		printf("2 - Mostrar jogadores\n");
+		printf("3 - JOGAR!\n");
+		printf("0 - Sair \n");
+		scanf("%d", &opc);
+		switch(opc){
+			case 1:{
+				char nome[30];
+				fflush(stdin);
+				printf("Nome do jogador:");
+				gets(nome);
+				listaJogadores = inserirJogador(listaJogadores, nome);
+				break;
+			}
+			case 2:{
+				mostrar(listaJogadores);
+				getch();
+				break;
+			}
+			case 3:{
+				jogar(inicio, listaJogadores);
+				break;
+			}
+			case 0:
+				printf("Saindo...");
+				break;
+			default:
+				printf("Opcao invalida!");
+				getch();
+		}
+	}while(opc != 0);
 	return 0;
 }
