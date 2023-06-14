@@ -113,7 +113,7 @@ void jogar(tabuleiro* tabuleiro, jogador* jogador){
 		while(vencedor != 1){
 			system("cls");
 		    	
-			printf("1 - Iniciar partida\n");
+			printf("1 - Jogar os dados!\n");
 			printf("2 - Mostrar tabuleiro\n");
 			printf("3 - Ver classificacao dos jogadores \n");
 			printf("0 - Sair\n");
@@ -121,7 +121,6 @@ void jogar(tabuleiro* tabuleiro, jogador* jogador){
 			
 			switch(opc){	
 				case 1:{
-					printf("Jogando os dados...\n");
 					//Zera o tabuleiro
 					while(tabuleiro->ant != NULL) tabuleiro = tabuleiro->ant;
 						
@@ -132,10 +131,11 @@ void jogar(tabuleiro* tabuleiro, jogador* jogador){
 					
 						//casa atual
 						printf("==========================\n");
-						printf("Jogador %s esta na casa %d\n", jogador->nome, jogador->casa);
+						printf("%s esta na casa %d\n", jogador->nome, jogador->casa);
 							
 						//roda o dado --nao funcionaaaaaa!!!!!!!!!!!!!!!!!!!!!!!!
 						dado = (rand() % (6 - 1 + 1)+1);
+						printf("Tirou %d no dado\n", dado);
 							
 						casaAtual = jogador->casa;
 						casaAtual = casaAtual + dado;
@@ -153,29 +153,29 @@ void jogar(tabuleiro* tabuleiro, jogador* jogador){
 						//percorre o tabuleiro até a casa onde deve ficar
 						while(casaAtual != tabuleiro->casa) tabuleiro = tabuleiro->prox;
 						jogador->casa = tabuleiro->casa; //Completa a ação de percorrer as casas
-						printf("Jogador %s andou %d casas e esta na posicao %d \n", jogador->nome, dado, jogador->casa);
-						printf("==========================\n");
+						printf("\n%s andou %d casas e agora esta na posicao %d \n", jogador->nome, dado, jogador->casa);
 						getch();
 							
 							
 							
 						if(tabuleiro->castigo >= 1){
 							printf("Xiiii...Jogador %s vai ficar sem jogar por %d rodada \n", jogador->nome, tabuleiro->castigo);
-							getch();
 						}
 						
+						getch();
 						jogador->castigo = tabuleiro->castigo;
 						jogador->regra = tabuleiro->regra;
 				
 						if(tabuleiro->regra >= 1){
-							printf("Avance %d casas \n", tabuleiro->regra);
+							printf("==========================\n");
+							printf("Boa! Avance %d casas \n", tabuleiro->regra);
 							totalRegra = jogador->casa; //NAO CONSEGUI FAZER SÓ COM PONTEIRO DO jogador->casa + tabuleiro->regra
 							totalRegra = totalRegra + tabuleiro->regra;
 								
 							while(totalRegra != tabuleiro->casa) tabuleiro = tabuleiro->prox;
 							jogador->casa = tabuleiro->casa; //Completa a ação de percorrer as casas
 								
-							printf("Jogador %s esta na posicao %d \n", jogador->nome, jogador->casa);
+							printf("%s esta na posicao %d \n", jogador->nome, jogador->casa);
 							getch();
 							//verifica se o jogador ganhou
 							if(casaAtual >= 20){
@@ -232,6 +232,7 @@ void jogar(tabuleiro* tabuleiro, jogador* jogador){
 }
 
 int main(){
+	srand(time(NULL));
 	tabuleiro* inicio = NULL;
 	jogador* listaJogadores = NULL;
 	int opc = 0;
@@ -294,5 +295,6 @@ int main(){
 				getch();
 		}
 	}while(opc != 0);
+	
 	return 0;
 }
