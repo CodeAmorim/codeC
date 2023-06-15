@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/*
+Arvore binaria:
+	O limite máximo de filhos de cada NÓ é 2, por isso binária;
+	
+	Arvore de decisao - Eurística
+	Altura - distancia entre a raiz e a folha
+	Arvore cheia - todos nós completos com nos nós folha
+	
+*/
+
+/*
+	1 - Mostrar em ordem crescente
+	2 - Contar quantos elementos tem
+	3 - Descobrir a altura da árvore
+	4 - Procurar um valor e mostrar seu nível, caso exista
+*/
+
+typedef
+struct N{
+	int valor;
+	struct N* FESQ;
+	struct N* FDIR;
+}no; // Sentido de Raiz para as folhas (lista simples)
+
+no* novo(int x){
+	no* p = (no*)malloc(sizeof(no));
+	
+	p->valor = x; //p na parte valor recebe x
+	p->FESQ = NULL;
+	p->FDIR = NULL;
+	
+	return p;
+}
+
+no* adicionar(no* R, int x){
+	if(R == NULL)
+		return novo(x);
+	if(x < R->valor)
+		R->FESQ = adicionar(R->FESQ, x);
+	else if(x > R->valor)
+		R->FDIR = adicionar(R->FDIR, x);
+	else
+		printf("Ja existe!\n");
+	return R;
+}
+
+no* menorValor(no* R){
+	no* p = R;
+	no* aux = R;
+	
+	while(p->FESQ != NULL){
+		if(aux->valor < p->valor){
+			p = aux;
+		}
+		aux = aux->FESQ;
+	}
+	
+	return p;
+}
+
+void mostrarCrescente(no* R) {
+	no* p = R;
+	if(R != NULL){
+		
+		mostrarCrescente(R->FESQ);
+		printf("%d\n", R->valor);
+		mostrarCrescente(p->FDIR);
+
+	}
+	
+}
+/*
+void contarElementos(no* R){
+	int cont = 0;
+	
+	if(R != NULL){
+		contarElementos(R->FESQ);
+		contarElementos(R->FDIR);
+		cont++;
+	}
+	printf("Sao %d elementos ao todo\n", cont);
+}
+*/
+
+void mostrar(no* R){
+	
+	if(R != NULL){
+		printf("%d\n", R->valor);
+		mostrar(R->FESQ);
+		mostrar(R->FDIR);
+	}
+}
+
+int main(){
+	no* R = NULL;
+	
+	R = adicionar(R, 5);
+	R = adicionar(R, 4);
+	R = adicionar(R, 3);
+	R = adicionar(R, 7);
+	R = adicionar(R, 2);
+	
+	printf("Valores da arvore:\n");
+	mostrar(R);
+	//contarElementos(R);
+	
+	printf("\nValores em ordem crescente:\n");
+	mostrarCrescente(R);
+	R = menorValor(R);
+	
+	printf("\nMenor valor: %d\n", R->valor);
+	
+	
+	return;
+}
