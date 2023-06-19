@@ -8,15 +8,8 @@ Arvore binaria:
 	Arvore de decisao - Eurística
 	Altura - distancia entre a raiz e a folha
 	Arvore cheia - todos nós completos com nos nós folha
-	
 */
 
-/*
-	1 - Mostrar em ordem crescente
-	2 - Contar quantos elementos tem
-	3 - Descobrir a altura da árvore
-	4 - Procurar um valor e mostrar seu nível, caso exista
-*/
 
 typedef
 struct N{
@@ -64,26 +57,55 @@ no* menorValor(no* R){
 void mostrarCrescente(no* R) {
 	no* p = R;
 	if(R != NULL){
-		
 		mostrarCrescente(R->FESQ);
 		printf("%d\n", R->valor);
 		mostrarCrescente(p->FDIR);
+	}
+}
 
-	}
-	
+void contarElementos(no* R, int* cont) {
+    if (R != NULL) {
+        (*cont)++;//ponteiro para um inteiro
+        contarElementos(R->FESQ, cont);
+        contarElementos(R->FDIR, cont);
+    }
 }
-/*
-void contarElementos(no* R){
-	int cont = 0;
-	
-	if(R != NULL){
-		contarElementos(R->FESQ);
-		contarElementos(R->FDIR);
-		cont++;
-	}
-	printf("Sao %d elementos ao todo\n", cont);
+
+int calcularAltura(no* R) {
+    if (R == NULL) {
+        return 0;
+    } else {
+        int alturaEsquerda = calcularAltura(R->FESQ);
+        int alturaDireita = calcularAltura(R->FDIR);
+        
+        if (alturaEsquerda > alturaDireita) {
+            return alturaEsquerda + 1;
+        } else {
+            return alturaDireita + 1;
+        }
+    }
 }
-*/
+
+int procurarNivel(no* R, int valor) {
+    if (R == NULL) {
+        return -1; // Valor não encontrado, retorna -1
+    } else if (R->valor == valor) {
+        return 0; // Valor encontrado, retorna o nível atual (0)
+    } else if (valor < R->valor) {
+        int nivel = procurarNivel(R->FESQ, valor); // Busca na subárvore esquerda
+        if (nivel != -1) {
+            return nivel + 1; // Incrementa o nível se o valor foi encontrado na subárvore esquerda
+        }
+    } else {
+        int nivel = procurarNivel(R->FDIR, valor); // Busca na subárvore direita
+        if (nivel != -1) {
+            return nivel + 1; // Incrementa o nível se o valor foi encontrado na subárvore direita
+        }
+    }
+    
+    return -1; // Valor não encontrado
+}
+
 
 void mostrar(no* R){
 	
@@ -96,23 +118,82 @@ void mostrar(no* R){
 
 int main(){
 	no* R = NULL;
-	
+	int opc;
 	R = adicionar(R, 5);
 	R = adicionar(R, 4);
 	R = adicionar(R, 3);
 	R = adicionar(R, 7);
 	R = adicionar(R, 2);
+	R = adicionar(R, 8);
 	
-	printf("Valores da arvore:\n");
-	mostrar(R);
-	//contarElementos(R);
 	
-	printf("\nValores em ordem crescente:\n");
-	mostrarCrescente(R);
-	R = menorValor(R);
 	
-	printf("\nMenor valor: %d\n", R->valor);
-	
+	do{
+		system("cls");
+		
+		printf("\n1 - Mostrar os valores da arvore");
+		printf("\n2 - Mostrar os valores em ordem crescente");
+		printf("\n3 - Mostrar o menor valor");
+		printf("\n4 - Contar os elementos");
+		printf("\n5 - Calcular a altura da arvore");
+		printf("\n6 - Procurar um valor e dizer o nivel");
+		printf("\nDigite a opcao desejada:");
+		scanf("%d", &opc);
+		
+		switch(opc){
+			case 1:{
+				printf("Valores da arvore:\n");
+				mostrar(R);
+				getch();
+				break;
+			}
+			case 2:{
+				printf("\nValores em ordem crescente:\n");
+				mostrarCrescente(R);
+				getch();
+				break;
+			}
+			case 3:{
+				R = menorValor(R);
+				printf("\nMenor valor: %d\n", R->valor);
+				getch();
+				break;
+			}
+			case 4:{
+				int cont = 0;
+   				contarElementos(R, &cont);
+    			printf("Sao %d elementos ao todo\n", cont);	
+    			getch();
+				break;
+			}
+			case 5:{
+				int altura = calcularAltura(R);
+				printf("\nAltura da arvore: %d\n", altura);
+				getch();
+				break;
+			}
+			case 6:{
+				int valor;
+				printf("\nDigite um valor:");
+				scanf("%d", &valor);
+				int nivel = procurarNivel(R, valor);
+				if (nivel != -1) {
+				    printf("O valor %d foi encontrado no nivel %d\n", valor, nivel);
+				} else {
+				    printf("O valor %d nao foi encontrado na arvore\n", valor);
+				}
+				getch();
+				break;
+			}
+			case 0:
+				printf("\nSaindo...");
+				break;
+			default:
+				printf("\nOpcao invalida!");
+				getch();
+				break;
+		}
+	}while(opc != 0);
 	
 	return;
 }
