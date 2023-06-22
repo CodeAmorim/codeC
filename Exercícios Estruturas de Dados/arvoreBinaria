@@ -40,65 +40,58 @@ no* adicionar(no* R, int x){
 	return R;
 }
 
-no* menorValor(no* R){
-	no* p = R;
-	no* aux = R;
-	
-	while(p->FESQ != NULL){
-		if(aux->valor < p->valor){
-			p = aux;
-		}
-		aux = aux->FESQ;
+void menorValor(no* R){
+	if(R!= NULL){
+		if(R->FESQ != NULL)
+			menorValor(R->FESQ);
+		else
+			printf("\nMenor valor: %d", R->valor);
 	}
-	
-	return p;
 }
 
-void mostrarCrescente(no* R) {
-	no* p = R;
+void mostrarCrescente(no* R){
 	if(R != NULL){
 		mostrarCrescente(R->FESQ);
 		printf("%d\n", R->valor);
-		mostrarCrescente(p->FDIR);
+		mostrarCrescente(R->FDIR);
 	}
 }
 
-void contarElementos(no* R, int* cont) {
-    if (R != NULL) {
+void contarElementos(no* R, int* cont){
+    if(R != NULL){
         (*cont)++;//ponteiro para um inteiro
         contarElementos(R->FESQ, cont);
         contarElementos(R->FDIR, cont);
     }
 }
 
-int calcularAltura(no* R) {
-    if (R == NULL) {
+int calcularAltura(no* R){
+    if(R == NULL)
         return 0;
-    } else {
-        int alturaEsquerda = calcularAltura(R->FESQ);
-        int alturaDireita = calcularAltura(R->FDIR);
-        
-        if (alturaEsquerda > alturaDireita) {
-            return alturaEsquerda + 1;
-        } else {
-            return alturaDireita + 1;
-        }
+
+    int alturaEsquerda = calcularAltura(R->FESQ);
+    int alturaDireita = calcularAltura(R->FDIR);
+    if (alturaEsquerda > alturaDireita){
+        return alturaEsquerda + 1;
+    }else{
+        return alturaDireita + 1;
     }
 }
 
-int procurarNivel(no* R, int valor) {
-    if (R == NULL) {
+int procurarNivel(no* R, int valor){
+    if(R == NULL)
         return -1; // Valor não encontrado, retorna -1
-    } else if (R->valor == valor) {
+        
+	if(R->valor == valor){
         return 0; // Valor encontrado, retorna o nível atual (0)
-    } else if (valor < R->valor) {
+    }lelse if(valor < R->valor){
         int nivel = procurarNivel(R->FESQ, valor); // Busca na subárvore esquerda
-        if (nivel != -1) {
+        if (nivel != -1){
             return nivel + 1; // Incrementa o nível se o valor foi encontrado na subárvore esquerda
         }
     } else {
         int nivel = procurarNivel(R->FDIR, valor); // Busca na subárvore direita
-        if (nivel != -1) {
+        if (nivel != -1){
             return nivel + 1; // Incrementa o nível se o valor foi encontrado na subárvore direita
         }
     }
@@ -119,12 +112,12 @@ void mostrar(no* R){
 int main(){
 	no* R = NULL;
 	int opc;
+	R = adicionar(R, 8);
 	R = adicionar(R, 5);
 	R = adicionar(R, 4);
-	R = adicionar(R, 3);
-	R = adicionar(R, 7);
-	R = adicionar(R, 2);
-	R = adicionar(R, 8);
+	R = adicionar(R, 6);
+	R = adicionar(R, 9);
+	R = adicionar(R, 10);
 	
 	
 	
@@ -154,8 +147,7 @@ int main(){
 				break;
 			}
 			case 3:{
-				R = menorValor(R);
-				printf("\nMenor valor: %d\n", R->valor);
+				menorValor(R);
 				getch();
 				break;
 			}
