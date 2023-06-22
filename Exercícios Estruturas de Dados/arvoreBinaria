@@ -122,26 +122,26 @@ no* remover(no* R, int num) {
 				aux->FESQ = R->FESQ;
 				free(R);
 				return aux;
+			}else if(R->FDIR != NULL){
+				no* ant = R;
+				no* aux = R->FDIR;
+				while(aux->FESQ != NULL){
+					ant = aux;
+					aux = aux->FESQ;
+				}
+				if(ant == R){
+					aux->FESQ = R->FESQ;
+					free(R);
+					return aux;
+				}
+				ant->FESQ = aux->FDIR;
+				aux->FESQ = R->FESQ;
+				aux->FDIR = R->FDIR;
+				free(R);
+				return aux;
 			}
 		}
-	}else if(R->FDIR != NULL){
-		no* ant = R;
-		no* aux = R->FDIR;
-		while(aux->FESQ != NULL){
-			ant = aux;
-			aux = aux->FESQ;
-		}
-		if(ant == R){
-			aux->FESQ = R->FESQ;
-			free(R);
-			return aux;
-		}
-		ant->FESQ = aux->FDIR;
-		aux->FESQ = R->FESQ;
-		aux->FDIR = R->FDIR;
-		free(R);
-		return aux;
-	}
+	
 	free(R);
 	return NULL;
 	if(R->valor > num){
