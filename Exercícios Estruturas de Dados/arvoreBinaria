@@ -80,24 +80,79 @@ int calcularAltura(no* R){
 
 int procurarNivel(no* R, int valor){
     if(R == NULL)
-        return -1; // Valor não encontrado, retorna -1
+        return -1; 
         
 	if(R->valor == valor){
-        return 0; // Valor encontrado, retorna o nível atual (0)
-    }lelse if(valor < R->valor){
-        int nivel = procurarNivel(R->FESQ, valor); // Busca na subárvore esquerda
+        return 0; 
+    }else if(valor < R->valor){
+        int nivel = procurarNivel(R->FESQ, valor); 
         if (nivel != -1){
-            return nivel + 1; // Incrementa o nível se o valor foi encontrado na subárvore esquerda
+            return nivel + 1;
         }
     } else {
-        int nivel = procurarNivel(R->FDIR, valor); // Busca na subárvore direita
+        int nivel = procurarNivel(R->FDIR, valor);
         if (nivel != -1){
-            return nivel + 1; // Incrementa o nível se o valor foi encontrado na subárvore direita
+            return nivel + 1;
         }
     }
     
     return -1; // Valor não encontrado
 }
+
+no* remover(no* R, int num) {
+    if (R == NULL)
+        return NULL;
+        
+    if(R != NULL){
+    	if(R->valor == num){
+    		if(R->FESQ != NULL){
+    			no* aux = R->FESQ;
+    			no* ant = R;
+    			while(aux->FDIR != NULL){
+    				ant = aux;
+    				aux = aux->FDIR;
+				}
+				if(ant == R){
+					aux->FDIR = R->FESQ;
+					free(R);
+					return aux;
+				}
+				ant->FDIR = aux->FESQ;
+				aux->FDIR = R->FDIR;
+				aux->FESQ = R->FESQ;
+				free(R);
+				return aux;
+			}
+		}
+	}else if(R->FDIR != NULL){
+		no* ant = R;
+		no* aux = R->FDIR;
+		while(aux->FESQ != NULL){
+			ant = aux;
+			aux = aux->FESQ;
+		}
+		if(ant == R){
+			aux->FESQ = R->FESQ;
+			free(R);
+			return aux;
+		}
+		ant->FESQ = aux->FDIR;
+		aux->FESQ = R->FESQ;
+		aux->FDIR = R->FDIR;
+		free(R);
+		return aux;
+	}
+	free(R);
+	return NULL;
+	if(R->valor > num){
+		R->FESQ = remover(R->FESQ, num);
+	}
+	R->FDIR = remover(R->FDIR, num);
+    return R;
+}
+
+
+
 
 
 void mostrar(no* R){
@@ -112,13 +167,17 @@ void mostrar(no* R){
 int main(){
 	no* R = NULL;
 	int opc;
-	R = adicionar(R, 8);
-	R = adicionar(R, 5);
-	R = adicionar(R, 4);
-	R = adicionar(R, 6);
-	R = adicionar(R, 9);
 	R = adicionar(R, 10);
-	
+	R = adicionar(R, 5);
+	R = adicionar(R, 8);
+	R = adicionar(R, 7);
+	R = adicionar(R, 9);
+	R = adicionar(R, 2);
+	R = adicionar(R, 1);
+	R = adicionar(R, 3);
+	R = adicionar(R, 4);
+	R = adicionar(R, 15);
+	R = adicionar(R, 14);
 	
 	
 	do{
@@ -130,6 +189,7 @@ int main(){
 		printf("\n4 - Contar os elementos");
 		printf("\n5 - Calcular a altura da arvore");
 		printf("\n6 - Procurar um valor e dizer o nivel");
+		printf("\n7 - Remover um elemento");
 		printf("\nDigite a opcao desejada:");
 		scanf("%d", &opc);
 		
@@ -175,6 +235,13 @@ int main(){
 				    printf("O valor %d nao foi encontrado na arvore\n", valor);
 				}
 				getch();
+				break;
+			}
+			case 7:{
+				int num;
+				printf("\nDigite um valor a ser removido:");
+				scanf("%d", &num);
+				remover(R, num);
 				break;
 			}
 			case 0:
