@@ -24,14 +24,14 @@ int main() {
     printf("Quantidade: ");
     scanf("%d", &quantidade);
     
-    //resultado1 = desconto(valor, porcentagem);
+    resultado1 = desconto(valor, porcentagem);
     
-    printf("O valor integral é: R$%2.f\n", valor);
-    //printf("O valor com desconto é: R$%2.f\n", resultado1);
+    printf("O valor integral Ã©: R$%2.f\n", valor);
+    printf("O valor com desconto Ã©: R$%2.f\n", resultado1);
     
     resultado = total_compra(quantidade, valor, porcentagem);
     
-    printf("O valor total da venda é de: R$%2.f", resultado);
+    printf("O valor total da venda Ã© de: R$%2.f", resultado);
     
 
     return 0;
